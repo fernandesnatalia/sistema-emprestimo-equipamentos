@@ -35,7 +35,7 @@ public class SecurityConfig {
                 .sessionManagement(sessao -> sessao.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/login", "/error").permitAll()
+                        .requestMatchers("/auth/login", "/error", "/actuator/health").permitAll()
                         .requestMatchers("/h2-console/**").hasRole("ADMIN")
                         .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/equipamentos/**", "/emprestimos/**", "/colaboradores/**")
