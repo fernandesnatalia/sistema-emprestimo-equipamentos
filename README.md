@@ -2,6 +2,8 @@
 
 API REST desenvolvida em **Java 25 e Spring Boot** para gerenciamento de empréstimos e devoluções de equipamentos corporativos.
 
+O sistema implementa regras de negócio para controle de disponibilidade, prevenção de empréstimos irregulares e acompanhamento de pendências, com autenticação JWT e autorização por perfis de acesso.
+
 ## Tecnologias utilizadas
 
 - Java 25
@@ -12,22 +14,22 @@ API REST desenvolvida em **Java 25 e Spring Boot** para gerenciamento de emprés
 - JWT (JSON Web Token)
 - H2 Database
 - Bean Validation
-- JUnit
+- JUnit 5 / Spring Boot Test
 - Maven
 - Swagger / OpenAPI
 - Docker
+- Render
 
 ## Funcionalidades
 
-- Cadastro, consulta, atualização e exclusão de equipamentos.
-- Cadastro e consulta de colaboradores.
-- Registro de empréstimos e devoluções.
-- Controle automático da disponibilidade dos equipamentos.
-- Prazo de devolução de 14 dias.
-- Identificação de empréstimos atrasados.
-- Bloqueio de empréstimos para colaboradores com pendências.
-- Histórico de empréstimos por colaborador.
-- Autenticação JWT e autorização por perfis `ADMIN` e `COLABORADOR`.
+- Gestão de equipamentos: cadastro, consulta, listagem com filtros, atualização e exclusão, respeitando as restrições de integridade e o histórico de empréstimos.
+- Gestão de colaboradores: cadastro, consulta, listagem e acesso ao histórico individual de empréstimos.
+- Gestão de empréstimos: registro de retiradas e devoluções, consulta de operações e acompanhamento da situação dos empréstimos.
+- Controle de disponibilidade: atualização automática do estado dos equipamentos conforme as operações realizadas.
+- Validação de operações: prevenção de empréstimos de equipamentos indisponíveis, devoluções duplicadas e novas retiradas por colaboradores com pendências vencidas.
+- Autenticação e autorização: emissão de tokens JWT, proteção de endpoints e controle de permissões pelos perfis `ADMIN` e `COLABORADOR`.
+- Documentação interativa: exploração e teste dos endpoints por meio do Swagger UI.
+- Validação e tratamento de erros: verificação dos dados recebidos e respostas HTTP adequadas às situações de erro.
 
 ## Regras de negócio
 
@@ -80,24 +82,26 @@ API REST desenvolvida em **Java 25 e Spring Boot** para gerenciamento de emprés
 |---|---|---|
 | POST | `/auth/login` | Autenticar usuário e obter JWT |
 
+As permissões de acesso variam conforme o perfil autenticado.
+
 ## Executando localmente
 
 **Pré-requisitos:**
 - JDK 25
 - Apache Maven 3.9.9 ou superior, na série 3.9.x
-- Variáveis de ambiente configuradas para autenticação JWT
 
-A aplicação utiliza H2 em arquivo para desenvolvimento local. Não é necessário instalar um servidor de banco de dados separado.
-
+O projeto utiliza banco de dados H2, dispensando a instalação de um servidor de banco de dados externo.
 
 Clone o repositório:
 
 ```bash
-git clone https://github.com/SEU_USUARIO/sistema-emprestimo-equipamentos.git
+git clone https://github.com/fernandesnatalia/sistema-emprestimo-equipamentos
 cd sistema-emprestimo-equipamentos
 ```
 
-Configure as seguintes variáveis de ambiente:
+### Configuração das variáveis de ambiente
+
+A aplicação precisa das seguintes variáveis:
 
 | Variável | Finalidade |
 |---|---|
@@ -109,11 +113,23 @@ Configure as seguintes variáveis de ambiente:
 | `H2_CONSOLE_ENABLED` | Habilitar console H2 localmente (opcional) |
 | `JPA_SHOW_SQL` | Exibir comandos SQL (opcional) |
 
-Execute:
+1. Gere a chave JWT executando no terminal:
 
 ```bash
-mvn spring-boot:run
+openssl rand -base64 32
 ```
+
+Copie a chave gerada.
+
+2. Configure as variáveis no IntelliJ IDEA:
+
+Em `Run → Edit Configurations`, no campo `Environment variables`, insira:
+
+```text
+JWT_SEGREDO={chave-gerada};ADMIN_USUARIO=admin;ADMIN_SENHA=admin123;COLAB_USUARIO=colaborador;COLAB_SENHA=colab123
+```
+Substitua `{chave-gerada}` pela chave gerada no passo anterior. Os nomes de usuário e as senhas são exemplos para execução local e podem ser alterados.
+
 
 A aplicação estará disponível em:
 
@@ -196,10 +212,24 @@ Os arquivos gerados pelo banco local são excluídos do versionamento pelo `.git
 
 ## Deploy
 
-O projeto possui Dockerfile para empacotamento e execução em contêiner.
+A API está publicada no **Render**, utilizando Docker para construção e execução da aplicação.
 
 As configurações sensíveis são fornecidas por variáveis de ambiente. O banco de dados e a persistência devem ser configurados de acordo com o ambiente de hospedagem.
 
+- **API REST:** [Acessar aplicação](https://sistema-emprestimo-equipamentos-r5rp.onrender.com)
+- **Swagger UI:** [Acessar documentação interativa e testar os endpoints](https://sistema-emprestimo-equipamentos-r5rp.onrender.com/swagger-ui/index.html)
+- **OpenAPI JSON:** [Visualizar especificação da API em formato JSON](https://sistema-emprestimo-equipamentos-r5rp.onrender.com/v3/api-docs)
+
 ---
+
+### Configuração do ambiente
+
+O repositório contém um `Dockerfile` utilizado para construir a imagem da aplicação e iniciar o servidor Spring Boot.
+
+No Render, as configurações de autenticação são fornecidas por variáveis de ambiente, incluindo o segredo JWT e as credenciais dos perfis ADMIN e COLABORADOR.
+
+A porta de execução é definida pela variável `PORT`, com valor padrão `8081` quando não informada.
+
+A aplicação utiliza H2 em arquivo. Como o armazenamento local de serviços hospedados pode ser temporário, a persistência dos registros entre reinicializações depende da configuração de armazenamento do ambiente.
 
 **Projeto desenvolvido para o ElasTech — Sistema de Empréstimo de Equipamentos.**
