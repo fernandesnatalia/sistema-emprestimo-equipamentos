@@ -8,7 +8,7 @@ Content-Type: application/json
 
 {
   "usuario": "admin",
-  "senha": "admin123"
+  "senha": "admin!@!123"
 }
 
 > {%
@@ -88,4 +88,41 @@ Content-Type: application/json
   "nome": "Teste de Segurança",
   "email": "seguranca@teste.com",
   "cargo": "Analista"
+}
+
+### 13. Teste de múltiplos erros de validação
+POST http://localhost:8081/equipamentos
+Authorization: Bearer {{tokenAdmin}}
+Content-Type: application/json
+
+{
+  "nome": "",
+  "tipo": null,
+  "patrimonio": ""
+}
+
+### 14. Teste de JSON inválido
+POST http://localhost:8081/equipamentos
+Authorization: Bearer {{tokenAdmin}}
+Content-Type: application/json
+
+{
+  "nome": "Notebook",
+  "tipo": "",
+  "patrimonio": "TESTE-001"
+}
+
+### 15. Recurso inexistente - Esperado: 404
+GET http://localhost:8081/equipamentos/999999
+Authorization: Bearer {{tokenAdmin}}
+
+### 16. Patrimônio duplicado - Esperado: 409
+POST http://localhost:8081/equipamentos
+Authorization: Bearer {{tokenAdmin}}
+Content-Type: application/json
+
+{
+  "patrimonio": "NB-001",
+  "nome": "Equipamento duplicado",
+  "tipo": "NOTEBOOK"
 }
