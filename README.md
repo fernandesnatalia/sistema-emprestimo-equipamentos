@@ -11,6 +11,7 @@ O sistema implementa regras de negócio para controle de disponibilidade, preven
 - Spring Web MVC
 - Spring Data JPA / Hibernate
 - Spring Security
+- Spring Boot Actuator
 - JWT (JSON Web Token)
 - H2 Database
 - Bean Validation
@@ -18,7 +19,8 @@ O sistema implementa regras de negócio para controle de disponibilidade, preven
 - Maven
 - Swagger / OpenAPI
 - Docker
-- Render
+- MockMvc
+- GitHub Actions
 
 ## Funcionalidades
 
@@ -163,12 +165,25 @@ Execute:
 ```bash
 mvn test
 ```
+### Testes automatizados
+
+A suíte utiliza JUnit 5 e Spring Boot Test, incluindo testes de integração com `@SpringBootTest` e `@AutoConfigureMockMvc`.
+
+Os testes de integração verificam:
+
+- Cadastro de equipamentos.
+- Consulta de equipamento inexistente (HTTP 404).
+- Empréstimo e devolução de equipamento.
+- Bloqueio de empréstimo de equipamento indisponível (HTTP 409).
+- Persistência e serialização dos relacionamentos `@ManyToOne`.
+
+Os testes utilizam H2 em memória, com configurações próprias em `src/test/resources/application.properties`.
 
 ### Testes com HTTP Client do IntelliJ IDEA
 
 O projeto utiliza o **HTTP Client do IntelliJ IDEA** para executar requisições REST diretamente pela IDE, sem necessidade de ferramentas externas como Postman.
 
-O arquivo `requests.http` contém requisições para testar os endpoints, as regras de negócio e a autenticação JWT, incluindo cenários de execução local e no Render.
+O arquivo `requests.http` contém requisições para testar localmente os endpoints, as regras de negócio, a validação de dados e a autenticação JWT, incluindo cenários de sucesso e respostas HTTP 400, 401, 403, 404 e 409.
 
 Para executar os testes:
 
@@ -179,9 +194,23 @@ Para executar os testes:
 
 As requisições autenticadas utilizam o token JWT obtido pelo endpoint `/auth/login`, enviado no cabeçalho `Authorization: Bearer`.
 
+### Integração contínua - GitHub Actions
+
+O projeto utiliza GitHub Actions para executar automaticamente os testes a cada `push` ou `pull request`.
+
+O workflow está definido em `.github/workflows/ci.yml` e realiza:
+
+- Checkout do repositório.
+- Configuração do Java 25 (Temurin).
+- Configuração do cache do Maven.
+- Execução dos testes automatizados com `mvn -B test`.
+
+A execução pode ser acompanhada na aba [Actions](https://github.com/fernandesnatalia/sistema-emprestimo-equipamentos/actions) do GitHub.
+
 ## Estrutura do projeto
 
 ```text
+.github/
 src/
 ├── main/
 │   ├── java/com/projeto/emprestimo/
@@ -204,6 +233,7 @@ src/
 Dockerfile
 pom.xml
 README.md
+requests.http
 .gitignore
 ```
 
@@ -218,7 +248,14 @@ O projeto utiliza **H2 Database** em dois modos:
 
 O H2 Console pode ser habilitado localmente pela variável `H2_CONSOLE_ENABLED=true`.
 
-Os arquivos gerados pelo banco local são excluídos do versionamento pelo `.gitignore`.
+### Relacionamentos JPA
+
+A entidade `Emprestimo` possui dois relacionamentos `@ManyToOne`:
+
+- **N:1 com `Equipamento`:** um equipamento pode possuir vários empréstimos registrados ao longo do tempo.
+- **N:1 com `Colaborador`:** um colaborador pode possuir vários empréstimos registrados.
+
+Cada empréstimo referencia um equipamento e um colaborador. Os relacionamentos são persistidos por meio de chaves estrangeiras e os objetos relacionados são incluídos nas respostas JSON.
 
 ## Deploy
 
@@ -229,6 +266,7 @@ As configurações sensíveis são fornecidas por variáveis de ambiente. O banc
 - **API REST:** [Acessar aplicação](https://sistema-emprestimo-equipamentos-r5rp.onrender.com)
 - **Swagger UI:** [Acessar documentação interativa e testar os endpoints](https://sistema-emprestimo-equipamentos-r5rp.onrender.com/swagger-ui/index.html)
 - **OpenAPI JSON:** [Visualizar especificação da API em formato JSON](https://sistema-emprestimo-equipamentos-r5rp.onrender.com/v3/api-docs)
+- **Health Check:** [Consultar status da aplicação](https://sistema-emprestimo-equipamentos-r5rp.onrender.com/actuator/health)
 
 ---
 
@@ -242,4 +280,4 @@ A porta de execução é definida pela variável `PORT`, com valor padrão `8081
 
 A aplicação utiliza H2 em arquivo. Como o armazenamento local de serviços hospedados pode ser temporário, a persistência dos registros entre reinicializações depende da configuração de armazenamento do ambiente.
 
-**Projeto desenvolvido para o ElasTech — Sistema de Empréstimo de Equipamentos.**
+**Projeto desenvolvido para o ElasTech - Sistema de Empréstimo de Equipamentos.**
