@@ -42,25 +42,6 @@ O sistema possui uma interface web integrada ao Spring Boot, desenvolvida com HT
 
 A interface permite utilizar as funcionalidades da API diretamente pelo navegador, com autenticação JWT e controle de acesso por perfil.
 
-### Funcionalidades da interface
-
-**Administrador (ADMIN):**
-- Autenticação e encerramento de sessão.
-- Cadastro, listagem, consulta, edição e exclusão de equipamentos.
-- Filtros de equipamentos por tipo e disponibilidade.
-- Cadastro e listagem de colaboradores.
-- Consulta do histórico de empréstimos por colaborador.
-- Registro e consulta de empréstimos.
-- Consulta de empréstimos atrasados.
-- Registro de devoluções.
-
-**Colaborador (COLABORADOR):**
-- Autenticação e encerramento de sessão.
-- Consulta da lista de equipamentos e sua disponibilidade.
-- Filtros por tipo e disponibilidade.
-
-As permissões são aplicadas no backend pelo Spring Security. A interface também oculta as funcionalidades não autorizadas para cada perfil.
-
 ### Estrutura dos arquivos
 
 ```text
@@ -74,13 +55,11 @@ Os arquivos são servidos diretamente pelo Spring Boot, no mesmo endereço da AP
 
 ### Acesso à interface
 
-**Ambiente local:**
+**Ambiente local:** Acessar pelo [localhost](http://localhost:8081/)
 
-http://localhost:8081/
+**Ambiente web publicado no Render:** Acessar pelo [Render](https://sistema-emprestimo-equipamentos-r5rp.onrender.com/)
 
-**Ambiente publicado no Render:**
-
-https://sistema-emprestimo-equipamentos-r5rp.onrender.com/
+![Demontração da interface web](docs/demonstracao-interface.gif)
 
 O usuário deve realizar login com as credenciais configuradas para seu perfil.
 
@@ -262,6 +241,7 @@ A execução pode ser acompanhada na aba [Actions](https://github.com/fernandesn
 
 ```text
 .github/
+docs/
 src/
 ├── main/
 │   ├── java/com/projeto/emprestimo/
