@@ -1,0 +1,91 @@
+### 1. Acesso sem token - Esperado: 401
+GET http://localhost:8081/equipamentos
+Accept: application/json
+
+### 2. Login ADMIN - Esperado: 200
+POST http://localhost:8081/auth/login
+Content-Type: application/json
+
+{
+  "usuario": "admin",
+  "senha": "admin123"
+}
+
+> {%
+    client.global.set("tokenAdmin", response.body.token);
+%}
+
+### 3. ADMIN acessa equipamentos - Esperado: 200
+GET http://localhost:8081/equipamentos
+Authorization: Bearer {{tokenAdmin}}
+
+### 4. ADMIN cadastra equipamento - Esperado: 201
+POST http://localhost:8081/equipamentos
+Authorization: Bearer {{tokenAdmin}}
+Content-Type: application/json
+
+{
+  "patrimonio": "NB-001",
+  "nome": "Equipamento de teste JWT",
+  "tipo": "NOTEBOOK"
+}
+
+### 5. Login COLABORADOR - Esperado: 200
+POST http://localhost:8081/auth/login
+Content-Type: application/json
+
+{
+  "usuario": "colaborador",
+  "senha": "colab123"
+}
+
+> {%
+    client.global.set("tokenColaborador", response.body.token);
+%}
+
+### 6. COLABORADOR consulta equipamentos - Esperado: 200
+GET http://localhost:8081/equipamentos
+Authorization: Bearer {{tokenColaborador}}
+
+### 7. COLABORADOR tenta cadastrar - Esperado: 403
+POST http://localhost:8081/equipamentos
+Authorization: Bearer {{tokenColaborador}}
+Content-Type: application/json
+
+{
+  "patrimonio": "NB-002",
+  "nome": "Cadastro não autorizado",
+  "tipo": "MONITOR"
+}
+
+### 8. COLABORADOR tenta excluir - Esperado: 403
+DELETE http://localhost:8081/equipamentos/1
+Authorization: Bearer {{tokenColaborador}}
+
+### 9. Token inválido - Esperado: 401
+GET http://localhost:8081/equipamentos
+Authorization: Bearer token-invalido
+
+### 10. Senha incorreta - Esperado: 401
+POST http://localhost:8081/auth/login
+Content-Type: application/json
+
+{
+  "usuario": "admin",
+  "senha": "senha-errada"
+}
+
+### 11. ADMIN consulta colaboradores - Esperado: 200
+GET http://localhost:8081/colaboradores
+Authorization: Bearer {{tokenAdmin}}
+
+### 12. COLABORADOR tenta cadastrar colaborador - Esperado: 403
+POST http://localhost:8081/colaboradores
+Authorization: Bearer {{tokenColaborador}}
+Content-Type: application/json
+
+{
+  "nome": "Teste de Segurança",
+  "email": "seguranca@teste.com",
+  "cargo": "Analista"
+}
