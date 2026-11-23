@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Empréstimos</title>
+    <link rel="stylesheet" href="/style.css">
+    <script src="/script.js" defer></script>
+</head>
+<body>
+<main class="container">
+    <section id="tela-login" class="cartao">
+        <div class="simbolo">▣</div>
+        <h1>Sistema de Empréstimos</h1>
+        <p class="subtitulo">Gestão de equipamentos e colaboradores</p>
+
+        <form id="form-login">
+            <label for="usuario">Usuário</label>
+            <input id="usuario" name="usuario"
+                   type="text" autocomplete="username"
+                   required>
+
+            <label for="senha">Senha</label>
+            <input id="senha" name="senha"
+                   type="password"
+                   autocomplete="current-password"
+                   required>
+
+            <button id="botao-login" type="submit">
+                Entrar
+            </button>
+
+            <p id="mensagem-login" class="mensagem"
+               role="alert" aria-live="polite"></p>
+        </form>
+    </section>
+
+    <section id="tela-sistema" class="cartao oculto">
+        <header class="cabecalho">
+            <div>
+                <h1>Painel de controle</h1>
+                <p id="perfil-usuario" class="subtitulo"></p>
+            </div>
+            <button id="botao-sair"
+                    type="button" class="secundario">
+                Sair
+            </button>
+        </header>
+
+        <section id="secao-equipamentos">
+            <div class="titulo-secao">
+                <h2>Equipamentos</h2>
+                <button type="button" id="atualizar-equipamentos"
+                        class="secundario">
+                    Atualizar lista
+                </button>
+            </div>
+
+            <div class="filtros">
+                <div>
+                    <label for="filtro-tipo">Tipo</label>
+                    <select id="filtro-tipo">
+                        <option value="">Todos</option>
+                        <option value="NOTEBOOK">Notebook</option>
+                        <option value="MONITOR">Monitor</option>
+                        <option value="MOUSE">Mouse</option>
+                        <option value="TECLADO">Teclado</option>
+                        <option value="HEADSET">Headset</option>
+                        <option value="OUTRO">Outro</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="filtro-disponibilidade">Disponibilidade</label>
+                    <select id="filtro-disponibilidade">
+                        <option value="">Todos</option>
+                        <option value="true">Disponíveis</option>
+                        <option value="false">Emprestados</option>
+                    </select>
+                </div>
+            </div>
+
+            <p id="mensagem-equipamentos" class="mensagem"
+               role="status" aria-live="polite"></p>
+
+            <div class="tabela-container">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Patrimônio</th>
+                        <th>Nome</th>
+                        <th>Tipo</th>
+                        <th>Situação</th>
+                        <th>Ações</th>
+                    </tr>
+                    </thead>
+                    <tbody id="lista-equipamentos"></tbody>
+                </table>
+            </div>
+
+            <div id="area-admin" class="oculto">
+                <h2>Cadastrar equipamento</h2>
+
+                <form id="form-equipamento">
+                    <label for="equipamento-patrimonio">Patrimônio</label>
+                    <input id="equipamento-patrimonio" required>
+
+                    <label for="equipamento-nome">Nome</label>
+                    <input id="equipamento-nome" required>
+
+                    <label for="equipamento-tipo">Tipo</label>
+                    <select id="equipamento-tipo" required>
+                        <option value="">Selecione</option>
+                        <option value="NOTEBOOK">Notebook</option>
+                        <option value="MONITOR">Monitor</option>
+                        <option value="MOUSE">Mouse</option>
+                        <option value="TECLADO">Teclado</option>
+                        <option value="HEADSET">Headset</option>
+                        <option value="OUTRO">Outro</option>
+                    </select>
+
+                    <button type="submit" id="salvar-equipamento">
+                        Cadastrar equipamento
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <section id="secao-colaboradores">
+            <div class="titulo-secao">
+                <h2>Colaboradores</h2>
+                <button type="button"
+                        id="atualizar-colaboradores"
+                        class="secundario">
+                    Atualizar lista
+                </button>
+            </div>
+
+            <p id="mensagem-colaboradores"
+               class="mensagem"
+               role="status"
+               aria-live="polite"></p>
+
+            <div class="tabela-container">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>E-mail</th>
+                        <th>Cargo</th>
+                        <th>Ações</th>
+                    </tr>
+                    </thead>
+                    <tbody id="lista-colaboradores"></tbody>
+                </table>
+            </div>
+
+            <div id="historico-colaborador" class="oculto">
+                <div class="titulo-secao">
+                    <h2 id="titulo-historico">Histórico de empréstimos</h2>
+                    <button type="button"
+                            id="fechar-historico"
+                            class="secundario">
+                        Fechar
+                    </button>
+                </div>
+
+                <p id="mensagem-historico"
+                   class="mensagem"
+                   role="status"></p>
+
+                <div class="tabela-container">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Equipamento</th>
+                            <th>Data</th>
+                            <th>Prazo</th>
+                            <th>Devolução</th>
+                        </tr>
+                        </thead>
+                        <tbody id="lista-historico"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="area-admin-colaboradores" class="oculto">
+                <h2>Cadastrar colaborador</h2>
+
+                <form id="form-colaborador">
+                    <label for="colaborador-nome">Nome</label>
+                    <input id="colaborador-nome" required>
+
+                    <label for="colaborador-email">E-mail</label>
+                    <input id="colaborador-email"
+                           type="email" required>
+
+                    <label for="colaborador-cargo">Cargo</label>
+                    <input id="colaborador-cargo" required>
+
+                    <button type="submit" id="salvar-colaborador">
+                        Cadastrar colaborador
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <section id="secao-emprestimos">
+            <div class="titulo-secao">
+                <h2>Empréstimos</h2>
+                <button type="button" id="atualizar-emprestimos"
+                        class="secundario">
+                    Atualizar lista
+                </button>
+            </div>
+
+            <div class="filtros">
+                <div>
+                    <label for="filtro-atrasados">Exibir</label>
+                    <select id="filtro-atrasados">
+                        <option value="">Todos os empréstimos</option>
+                        <option value="true">Somente atrasados</option>
+                    </select>
+                </div>
+            </div>
+
+            <p id="mensagem-emprestimos" class="mensagem"
+               role="status" aria-live="polite"></p>
+
+            <div class="tabela-container">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Equipamento</th>
+                        <th>Colaborador</th>
+                        <th>Empréstimo</th>
+                        <th>Prazo</th>
+                        <th>Devolução</th>
+                        <th>Situação</th>
+                        <th>Ações</th>
+                    </tr>
+                    </thead>
+                    <tbody id="lista-emprestimos"></tbody>
+                </table>
+            </div>
+
+            <div id="area-novo-emprestimo">
+                <h2>Registrar empréstimo</h2>
+
+                <form id="form-emprestimo">
+                    <label for="emprestimo-equipamento">Equipamento disponível</label>
+                    <select id="emprestimo-equipamento" required>
+                        <option value="">Selecione um equipamento</option>
+                    </select>
+
+                    <label for="emprestimo-colaborador">Colaborador</label>
+                    <select id="emprestimo-colaborador" required>
+                        <option value="">Selecione um colaborador</option>
+                    </select>
+
+                    <button type="submit" id="salvar-emprestimo">
+                        Registrar empréstimo
+                    </button>
+                </form>
+            </div>
+        </section>
+    </section>
+</main>
+</body>
+</html>

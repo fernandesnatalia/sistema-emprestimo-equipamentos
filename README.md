@@ -7,6 +7,11 @@ O sistema implementa regras de negócio para controle de disponibilidade, preven
 ## Tecnologias utilizadas
 
 - Java 25
+- HTML5
+- CSS3
+- JavaScript
+- GitHub Actions
+- JUnit 5 / Spring Boot Test
 - Spring Boot 4.1.2
 - Spring Web MVC
 - Spring Data JPA / Hibernate
@@ -14,13 +19,11 @@ O sistema implementa regras de negócio para controle de disponibilidade, preven
 - Spring Boot Actuator
 - JWT (JSON Web Token)
 - H2 Database
-- Bean Validation
-- JUnit 5 / Spring Boot Test
-- Maven
 - Swagger / OpenAPI
 - Docker
+- Bean Validation
+- Maven
 - MockMvc
-- GitHub Actions
 
 ## Funcionalidades
 
@@ -32,6 +35,54 @@ O sistema implementa regras de negócio para controle de disponibilidade, preven
 - Autenticação e autorização: emissão de tokens JWT, proteção de endpoints e controle de permissões pelos perfis `ADMIN` e `COLABORADOR`.
 - Documentação interativa: exploração e teste dos endpoints por meio do Swagger UI.
 - Validação e tratamento de erros: verificação dos dados recebidos e respostas HTTP adequadas às situações de erro.
+
+## Interface Web
+
+O sistema possui uma interface web integrada ao Spring Boot, desenvolvida com HTML5, CSS3 e JavaScript puro, sem dependência de frameworks frontend.
+
+A interface permite utilizar as funcionalidades da API diretamente pelo navegador, com autenticação JWT e controle de acesso por perfil.
+
+### Funcionalidades da interface
+
+**Administrador (ADMIN):**
+- Autenticação e encerramento de sessão.
+- Cadastro, listagem, consulta, edição e exclusão de equipamentos.
+- Filtros de equipamentos por tipo e disponibilidade.
+- Cadastro e listagem de colaboradores.
+- Consulta do histórico de empréstimos por colaborador.
+- Registro e consulta de empréstimos.
+- Consulta de empréstimos atrasados.
+- Registro de devoluções.
+
+**Colaborador (COLABORADOR):**
+- Autenticação e encerramento de sessão.
+- Consulta da lista de equipamentos e sua disponibilidade.
+- Filtros por tipo e disponibilidade.
+
+As permissões são aplicadas no backend pelo Spring Security. A interface também oculta as funcionalidades não autorizadas para cada perfil.
+
+### Estrutura dos arquivos
+
+```text
+src/main/resources/static/
+├── index.html
+├── style.css
+└── script.js
+```
+
+Os arquivos são servidos diretamente pelo Spring Boot, no mesmo endereço da API, dispensando um servidor frontend separado e configuração de CORS para a interface.
+
+### Acesso à interface
+
+**Ambiente local:**
+
+http://localhost:8081/
+
+**Ambiente publicado no Render:**
+
+https://sistema-emprestimo-equipamentos-r5rp.onrender.com/
+
+O usuário deve realizar login com as credenciais configuradas para seu perfil.
 
 ## Regras de negócio
 
@@ -132,7 +183,6 @@ JWT_SEGREDO={chave-gerada};ADMIN_USUARIO=admin;ADMIN_SENHA=admin123;COLAB_USUARI
 ```
 Substitua `{chave-gerada}` pela chave gerada no passo anterior. Os nomes de usuário e as senhas são exemplos para execução local e podem ser alterados.
 
-
 A aplicação estará disponível em:
 
 `http://localhost:8081`
@@ -147,8 +197,8 @@ A API utiliza JWT para proteger os endpoints.
 
 Os perfis disponíveis são:
 
-- **ADMIN:** acesso às operações administrativas e de empréstimo.
-- **COLABORADOR:** acesso às consultas e operações de empréstimo e devolução autorizadas.
+- **ADMIN:** acesso ao gerenciamento de equipamentos, colaboradores, empréstimos e devoluções.
+- **COLABORADOR:** acesso somente à consulta de equipamentos, incluindo os filtros de tipo e disponibilidade.
 
 Para acessar os endpoints protegidos, realize login em `/auth/login` e envie o token no cabeçalho:
 
@@ -165,6 +215,7 @@ Execute:
 ```bash
 mvn test
 ```
+
 ### Testes automatizados
 
 A suíte utiliza JUnit 5 e Spring Boot Test, incluindo testes de integração com `@SpringBootTest` e `@AutoConfigureMockMvc`.
@@ -224,6 +275,10 @@ src/
 │   │   ├── security/
 │   │   └── service/
 │   └── resources/
+│       ├── static/
+│       │   ├── index.html
+│       │   ├── style.css
+│       │   └── script.js
 │       └── application.properties
 └── test/
     ├── java/com/projeto/emprestimo/
@@ -260,6 +315,8 @@ Cada empréstimo referencia um equipamento e um colaborador. Os relacionamentos 
 ## Deploy
 
 A API está publicada no **Render**, utilizando Docker para construção e execução da aplicação.
+
+A interface web é disponibilizada pelo próprio Spring Boot, no mesmo endereço da API, permitindo o acesso às funcionalidades do sistema diretamente pelo navegador.
 
 As configurações sensíveis são fornecidas por variáveis de ambiente. O banco de dados e a persistência devem ser configurados de acordo com o ambiente de hospedagem.
 

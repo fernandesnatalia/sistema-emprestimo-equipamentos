@@ -2,6 +2,7 @@ package com.projeto.emprestimo.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -44,5 +45,11 @@ public class TratadorDeErros {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErroResposta jsonInvalido(HttpMessageNotReadableException e) {
         return new ErroResposta("JSON inválido ou valor incompatível com o tipo esperado");
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErroResposta integridade(DataIntegrityViolationException e) {
+        return new ErroResposta("Registro duplicado ou conflito de integridade.");
     }
 }

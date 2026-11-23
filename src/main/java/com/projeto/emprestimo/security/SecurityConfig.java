@@ -35,14 +35,11 @@ public class SecurityConfig {
                 .sessionManagement(sessao -> sessao.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/", "/index.html", "/style.css", "/script.js", "/favicon.ico").permitAll()
                         .requestMatchers("/auth/login", "/error", "/actuator/health").permitAll()
                         .requestMatchers("/h2-console/**").hasRole("ADMIN")
                         .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/equipamentos/**", "/emprestimos/**", "/colaboradores/**")
-                        .hasAnyRole("ADMIN", "COLABORADOR")
-                        .requestMatchers(HttpMethod.POST, "/emprestimos")
-                        .hasAnyRole("ADMIN", "COLABORADOR")
-                        .requestMatchers(HttpMethod.PUT, "/emprestimos/*/devolucao")
+                        .requestMatchers(HttpMethod.GET, "/equipamentos/**")
                         .hasAnyRole("ADMIN", "COLABORADOR")
                         .anyRequest().hasRole("ADMIN"))
                 .exceptionHandling(erro -> erro.authenticationEntryPoint(
