@@ -182,9 +182,6 @@ As requisições autenticadas utilizam o token JWT obtido pelo endpoint `/auth/l
 ## Estrutura do projeto
 
 ```text
-## Estrutura do projeto
-
-```text
 src/
 ├── main/
 │   ├── java/com/projeto/emprestimo/
