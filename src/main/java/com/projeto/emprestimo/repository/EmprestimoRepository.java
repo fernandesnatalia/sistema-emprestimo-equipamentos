@@ -7,13 +7,13 @@ import java.util.List;
 
 public interface EmprestimoRepository extends JpaRepository<Emprestimo, Long> {
 
-    List<Emprestimo> findByColaboradorId(Long colaboradorId);
+    List<Emprestimo> findByColaborador_Id(Long colaboradorId);
 
     List<Emprestimo> findByDataDevolucaoIsNullAndDataPrevistaDevolucaoBefore(LocalDate data);
 
-    boolean existsByEquipamentoId(Long equipamentoId);
+    boolean existsByEquipamento_Id(Long equipamentoId);
 
-    boolean existsByColaboradorIdAndDataDevolucaoIsNullAndDataPrevistaDevolucaoBefore(
+    boolean existsByColaborador_IdAndDataDevolucaoIsNullAndDataPrevistaDevolucaoBefore(
             Long colaboradorId, LocalDate data
     );
 }

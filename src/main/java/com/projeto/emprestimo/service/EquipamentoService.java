@@ -62,10 +62,11 @@ public class EquipamentoService {
 
         return equipamentoRepository.save(equipamento);
     }
+
     public void remover(Long id) {
         Equipamento equipamento = buscar(id);
 
-        if (emprestimoRepository.existsByEquipamentoId(id)) {
+        if (emprestimoRepository.existsByEquipamento_Id(id)) {
             throw new ConflitoException("Equipamento tem empréstimos registrados");
         }
 

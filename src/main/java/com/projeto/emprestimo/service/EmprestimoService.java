@@ -2,6 +2,7 @@ package com.projeto.emprestimo.service;
 
 import com.projeto.emprestimo.exception.ConflitoException;
 import com.projeto.emprestimo.exception.NaoEncontradoException;
+import com.projeto.emprestimo.model.Colaborador;
 import com.projeto.emprestimo.model.Emprestimo;
 import com.projeto.emprestimo.repository.EquipamentoRepository;
 import com.projeto.emprestimo.repository.ColaboradorRepository;
@@ -29,7 +30,6 @@ public class EmprestimoService {
         this.colaboradorRepository = colaboradorRepository;
     }
 
-
     public List<Emprestimo> listar(Boolean atrasados) {
         if (Boolean.TRUE.equals(atrasados)) {
             return emprestimoRepository.findByDataDevolucaoIsNullAndDataPrevistaDevolucaoBefore(LocalDate.now());
@@ -42,13 +42,12 @@ public class EmprestimoService {
                 () -> new NaoEncontradoException("Empréstimo não encontrado"));
     }
 
-
     public List<Emprestimo> listarDoColaborador(Long colaboradorId) {
         if (!colaboradorRepository.existsById(colaboradorId)) {
             throw new NaoEncontradoException("Colaborador não encontrado");
         }
 
-        return emprestimoRepository.findByColaboradorId(colaboradorId);
+        return emprestimoRepository.findByColaborador_Id(colaboradorId);
     }
 
     @Transactional
@@ -58,12 +57,11 @@ public class EmprestimoService {
                 .findById(equipamentoId)
                 .orElseThrow(() -> new NaoEncontradoException("Equipamento não encontrado"));
 
-        if (!colaboradorRepository.existsById(colaboradorId)) {
-            throw new NaoEncontradoException("Colaborador não encontrado");
-        }
+        Colaborador colaborador = colaboradorRepository.findById(colaboradorId)
+                .orElseThrow(() -> new NaoEncontradoException("Colaborador não encontrado"));
 
         if (emprestimoRepository
-                .existsByColaboradorIdAndDataDevolucaoIsNullAndDataPrevistaDevolucaoBefore(
+                .existsByColaborador_IdAndDataDevolucaoIsNullAndDataPrevistaDevolucaoBefore(
                         colaboradorId, LocalDate.now())) {
             throw new ConflitoException("Colaborador possui empréstimo atrasado");
         }
@@ -74,13 +72,12 @@ public class EmprestimoService {
 
         equipamento.emprestar();
 
-        Emprestimo emprestimo = new Emprestimo(equipamentoId, colaboradorId, LocalDate.now());
+        Emprestimo emprestimo = new Emprestimo(equipamento, colaborador, LocalDate.now());
 
         equipamentoRepository.save(equipamento);
 
         return emprestimoRepository.save(emprestimo);
     }
-
 
     @Transactional
     public Emprestimo devolver(Long id) {

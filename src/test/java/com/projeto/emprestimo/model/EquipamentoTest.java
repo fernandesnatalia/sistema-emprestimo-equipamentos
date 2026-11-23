@@ -1,5 +1,6 @@
 package com.projeto.emprestimo.model;
 
+import com.projeto.emprestimo.exception.ConflitoException;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -16,7 +17,7 @@ class EquipamentoTest {
     void emprestarEquipamentoIndisponivel() {
         Equipamento equipamento = new Equipamento();
         equipamento.setDisponivel(false);
-        assertThrows(IllegalStateException.class, () -> equipamento.emprestar());
+        assertThrows(ConflitoException.class, () -> equipamento.emprestar());
     }
 
     @Test

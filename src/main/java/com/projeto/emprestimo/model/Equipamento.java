@@ -1,5 +1,6 @@
 package com.projeto.emprestimo.model;
 
+import com.projeto.emprestimo.exception.ConflitoException;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.GenerationType;
@@ -57,7 +58,7 @@ public class Equipamento {
 
     public void emprestar() {
         if (!disponivel) {
-            throw new IllegalStateException("Equipamento indisponível");
+            throw new ConflitoException("Equipamento indisponível");
         }
 
         this.disponivel = false;

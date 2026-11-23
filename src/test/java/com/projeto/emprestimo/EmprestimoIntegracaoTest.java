@@ -90,6 +90,8 @@ class EmprestimoIntegracaoTest {
                         .param("equipamentoId", equipamentoId.toString())
                         .param("colaboradorId", colaboradorId.toString()))
                 .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.equipamento.id").value(equipamentoId))
+                .andExpect(jsonPath("$.colaborador.id").value(colaboradorId))
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
@@ -136,5 +138,21 @@ class EmprestimoIntegracaoTest {
                         .param("colaboradorId", colaboradorId.toString()))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.message").exists());
+    }
+
+    @Test
+    void devePersistirRelacionamentosManyToOne() throws Exception {
+        String token = tokenAdmin();
+
+        Long equipamentoId = cadastrarEquipamento(token);
+        Long colaboradorId = cadastrarColaborador(token);
+
+        Long emprestimoId = realizarEmprestimo(token, equipamentoId, colaboradorId);
+
+        mockMvc.perform(get("/emprestimos/{id}", emprestimoId)
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.equipamento.id").value(equipamentoId))
+                .andExpect(jsonPath("$.colaborador.id").value(colaboradorId));
     }
 }
