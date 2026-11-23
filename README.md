@@ -164,7 +164,20 @@ Execute:
 mvn test
 ```
 
-Também foram realizados testes manuais dos endpoints REST, das dez regras de negócio e dos controles de autenticação e autorização.
+### Testes com HTTP Client do IntelliJ IDEA
+
+O projeto utiliza o **HTTP Client do IntelliJ IDEA** para executar requisições REST diretamente pela IDE, sem necessidade de ferramentas externas como Postman.
+
+O arquivo `requests.http` contém requisições para testar os endpoints, as regras de negócio e a autenticação JWT, incluindo cenários de execução local e no Render.
+
+Para executar os testes:
+
+1. Inicie a aplicação localmente ou utilize a API publicada no Render.
+2. Abra o arquivo `requests.http` no IntelliJ IDEA.
+3. Execute as requisições pelo ícone **Run** ao lado de cada uma.
+4. Consulte o código HTTP e o corpo da resposta exibidos pela IDE.
+
+As requisições autenticadas utilizam o token JWT obtido pelo endpoint `/auth/login`, enviado no cabeçalho `Authorization: Bearer`.
 
 ## Estrutura do projeto
 
